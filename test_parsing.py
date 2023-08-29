@@ -14,11 +14,11 @@ headers = {
 
 past_date = datetime.datetime.strptime('02.03.2023', '%d.%m.%Y').date()
 competition = "/cbf-brasileiro-u20/startseite/wettbewerb/CB20/saison_id/2022"
-r = requests.get(f.link(past_date), headers=headers)
+r = requests.get(f.fixtures_link(past_date), headers=headers)
 soup = BeautifulSoup(r.text, 'html.parser')  
 
 def test_link():
-    assert f.link(past_date) == 'https://www.transfermarkt.pl/aktuell/waspassiertheute/aktuell/new/datum/2023-03-02'
+    assert f.fixtures_link(past_date) == 'https://www.transfermarkt.pl/aktuell/waspassiertheute/aktuell/new/datum/2023-03-02'
         
 
 def test_matches_by_competitions():

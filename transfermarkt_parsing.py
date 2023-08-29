@@ -137,7 +137,7 @@ class Fixtures():
     base_link = 'https://www.transfermarkt.pl/aktuell/waspassiertheute/aktuell/new/datum/'
     
     @staticmethod
-    def link(checked_date:date | None = None) -> str:
+    def fixtures_link(checked_date:date | None = None) -> str:
         if not checked_date:
             checked_date = datetime.today().date()
         checked_date = str(checked_date)

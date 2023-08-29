@@ -1,8 +1,11 @@
 leagues_raw = {'/premier-league/gesamtspielplan/wettbewerb/GB1/saison_id/2022': 'Wielka Brytania',
            '/laliga/gesamtspielplan/wettbewerb/ES1/saison_id/2022': 'Europa Południowa',
            '/uefa-champions-league/gesamtspielplan/pokalwettbewerb/CL/saison_id/2022': 'Liga Mistrzów',
+           '/champions-league-quali/startseite/pokalwettbewerb/CLQ/saison_id/2022': 'Liga Mistrzów',
            '/europa-league/gesamtspielplan/pokalwettbewerb/EL/saison_id/2022': 'Liga Europy',
+           '/europa-league-quali/startseite/pokalwettbewerb/ELQ/saison_id/2022': 'Liga Europy',
            '/uefa-europa-conference-league/gesamtspielplan/pokalwettbewerb/UCOL/saison_id/2022': 'Liga Konferencji Europy',
+           '/uefa-europa-conference-league-qualifikation/startseite/pokalwettbewerb/ECLQ/saison_id/2022': 'Liga Konferencji Europy',
            '/3-liga-grupa-iii/gesamtspielplan/wettbewerb/PL33/saison_id/2022': 'Rozgrywki Polskiego Związku Piłki Nożnej',
            '/3-liga-grupa-ii/gesamtspielplan/wettbewerb/PL32/saison_id/2022': 'Rozgrywki Polskiego Związku Piłki Nożnej',
            '/3-liga-grupa-iv/gesamtspielplan/wettbewerb/PL34/saison_id/2022': 'Rozgrywki Polskiego Związku Piłki Nożnej',
@@ -60,6 +63,8 @@ leagues_raw = {'/premier-league/gesamtspielplan/wettbewerb/GB1/saison_id/2022': 
            '/cupa-romaniei/gesamtspielplan/pokalwettbewerb/ROMP/saison_id/2022': 'Europa Wschodnia',
            '/sydbank-pokalen/gesamtspielplan/pokalwettbewerb/DKP/saison_id/2022': 'Europa Zachodnia',
            '/fortuna-polnischer-pokal/gesamtspielplan/pokalwettbewerb/POPU/saison_id/2022': 'Rozgrywki Polskiego Związku Piłki Nożnej',
+           '/aufstiegsplayoffs-ekstraklasa/gesamtspielplan/wettbewerb/BAPO/saison_id/2022': 'Rozgrywki Polskiego Związku Piłki Nożnej',
+           '/baraze-o-udzial-w-1-lidze/gesamtspielplan/wettbewerb/BAPL/saison_id/2022': 'Rozgrywki Polskiego Związku Piłki Nożnej',
            '/schweizer-cup/gesamtspielplan/pokalwettbewerb/SCC/saison_id/2022': 'Europa Zachodnia',
            '/sfa-cup/gesamtspielplan/pokalwettbewerb/SFA/saison_id/2022': 'Wielka Brytania',
            '/kypello-elladas/gesamtspielplan/pokalwettbewerb/GRP/saison_id/2022': 'Europa Południowa',
@@ -70,11 +75,12 @@ leagues_raw = {'/premier-league/gesamtspielplan/wettbewerb/GB1/saison_id/2022': 
            '/taca-de-portugal-placard/gesamtspielplan/pokalwettbewerb/POPO/saison_id/2022': 'Europa Południowa',
            '/coupe-de-france/gesamtspielplan/pokalwettbewerb/FRC/saison_id/2022': 'Europa Zachodnia',
            '/dfb-pokal/gesamtspielplan/pokalwettbewerb/DFB/saison_id/2022': 'Europa Zachodnia',
+           '/relegation-2-bundesliga/gesamtspielplan/wettbewerb/L2PO/saison_id/2022': 'Europa Zachodnia',
            '/coppa-italia/gesamtspielplan/pokalwettbewerb/CIT/saison_id/2022': 'Europa Południowa',
            '/copa-del-rey/gesamtspielplan/pokalwettbewerb/CDR/saison_id/2022': 'Europa Południowa',
            '/super-league-1-play-off/gesamtspielplan/wettbewerb/POGR/saison_id/2022': 'Europa Południowa',
            '/super-league-1-play-out/gesamtspielplan/wettbewerb/S1PO/saison_id/2022': 'Europa Południowa',
            }
 
-
+leagues_raw = {key.replace('2022', '2023'): value for key, value in leagues_raw.items()}
 leagues = {key.split('/')[4]: value for key, value in leagues_raw.items()}
