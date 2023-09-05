@@ -129,7 +129,7 @@ def get_player_info(player_id):
         name = soup.div.h1.text.strip()
     soup = soup.find('div', {'class':'data-header__info-box'})
     soup = soup.div.ul.find_all('li')
-    birth_date, birth_place, citizenship = None, None, None
+    birth_date, birth_city, birth_state, citizenship_state = None, None, None, None
     for entry in soup:
         match entry.text.split(':')[0].strip():
             case "Date of birth/Age":
@@ -142,11 +142,30 @@ def get_player_info(player_id):
                 birth_date = datetime.strptime(birth_date, "%b %d %Y").date()
                 birth_date = datetime.strftime(birth_date, "%Y-%m-%d")
             case "Place of birth":
-                birth_place = entry.span.text.strip() + '/' + entry.img['title']
+                birth_city = entry.span.text.strip()
+                try:
+                    birth_state = entry.img['title']
+                except AttributeError as e:
+                    logging.error(player_id + "causes (no img)" + e)
             case "Citizenship":
-                citizenship = entry.span.text.strip()
-    return name, birth_date, birth_place, citizenship
-            
+                citizenship_state = entry.span.text.strip()
+    return name, birth_date, birth_city, birth_state, citizenship_state
+
+def get_team_info(team_id):
+    assert team_id
+    link = "https://www.transfermarkt.com/team/startseite/verein/{}".format(team_id)
+    r = requests.get(link, headers=headers).text
+    soup = BeautifulSoup(r, 'html.parser')
+    soup = soup.find('header', {'class': 'data-header'})    
+    name = soup.div.h1.text.strip()
+    return name, 
+    
+def get_league_info(league_abbr):
+    assert league_abbr
+    link = "https://www.transfermarkt.com/league/startseite/verein/{}".format(league_abbr)
+    r = requests.get(link, headers=headers).text
+    soup = BeautifulSoup(r, 'html.parser')
+    
 if __name__ == '__main__':
     while True:
         try:

@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import logging
 from golgif import get_competitors, check_scorer_online, goal_data_from_scorer
-from golgifdb import get_new_submissions_12, check_data_prerequisites
+from golgifdb import get_new_submissions_6, check_data_prerequisites
 from time import sleep
 import sqlite3
 
@@ -17,12 +17,11 @@ if __name__ == '__main__':
         try:
             con = sqlite3.connect(DB)
             cur = con.cursor()
-            get_new_submissions_12(cur)
+            get_new_submissions_6(cur)
             result = cur.fetchall()
             
             for submission in result:
                 submission = reddit.submission(submission[0])
-                print(submission.title)
                 main_link = submission.url
                 # side_links = links_from_comment() 
                 competitors = get_competitors(submission.title)
