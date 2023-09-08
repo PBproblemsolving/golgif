@@ -97,14 +97,21 @@ def goal_data_from_scorer(scorer_link: str, timestamp):
         league_abbr = competition.div.a['name']
         for match in matches[1:-1]:
             match = match.findAll('td')
-            round = match[0].text.strip()
-            matchdate = trans_date_parser(match[1].text)
-            if matchdate != submition_date:
+            try:
+                round = match[0].text.strip()
+                matchdate = trans_date_parser(match[1].text)
+                if matchdate != submition_date:
+                    continue
+                try:
+                    int(match[-6].text.strip())
+                except (IndexError, ValueError):
+                    continue
+                venue = match[2].text
+                goal_for = match[3].a['href'].split('/')[-3]
+                goal_against = match[5].a['href'].split('/')[-3]
+                season = match[3].a['href'].split('/')[-1]
+            except IndexError or AttributeError:
                 continue
-            venue = match[2].text
-            goal_for = match[3].a['href'].split('/')[-3]
-            goal_against = match[5].a['href'].split('/')[-3]
-            season = match[3].a['href'].split('/')[-1]
             return FromScorerTuple(scorer_id, goal_for, goal_against, season, league_abbr, 
                                      matchdate, round, venue)
     else:
@@ -123,11 +130,12 @@ def get_player_info(player_id):
     r = requests.get(link, headers=headers).text
     soup = BeautifulSoup(r, 'html.parser')
     soup = soup.find('header', {'class': 'data-header'})
+    soup_name = soup.find('div', {'class': 'data-header__headline-container'})
     try:
-        name = soup.div.h1.text.strip().split('\n')[1].strip()
+        name = soup_name.h1.text.strip().split('\n')[1].strip()
     except IndexError:
-        name = soup.div.h1.text.strip()
-    soup = soup.find('div', {'class':'data-header__info-box'})
+        name = soup_name.h1.text.strip()
+    soup = soup.find('div', {'class':"data-header__info-box"})
     soup = soup.div.ul.find_all('li')
     birth_date, birth_city, birth_state, citizenship_state = None, None, None, None
     for entry in soup:
@@ -162,9 +170,18 @@ def get_team_info(team_id):
     
 def get_league_info(league_abbr):
     assert league_abbr
-    link = "https://www.transfermarkt.com/league/startseite/verein/{}".format(league_abbr)
+    link = "https://www.transfermarkt.com/leauge/startseite/pokalwettbewerb/{}".format(league_abbr)
     r = requests.get(link, headers=headers).text
     soup = BeautifulSoup(r, 'html.parser')
+    soup = soup.find('header', {'class': 'data-header'})    
+    name = soup.div.h1.text.strip()
+    soup = soup.find('div', {'class': 'data-header__info-box'}).div.ul.li.span
+    try:
+        state_name = soup.img['title']
+    except (AttributeError, TypeError):
+        state_name = None
+    tier = soup.text.strip()
+    return name, state_name, tier
     
 if __name__ == '__main__':
     while True:
@@ -205,3 +222,4 @@ if __name__ == '__main__':
         except Exception as e:
             logging.exception(e)
             continue
+    sleep(3600)
