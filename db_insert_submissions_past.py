@@ -15,17 +15,19 @@ if __name__ == '__main__':
             con = sqlite3.connect(DB)
             cur = con.cursor()
             subreddit = reddit.subreddit('soccer')
-            result = subreddit.stream.submissions(limit=None)
+            result = subreddit.stream.submissions()
             
             for submission in result:
                 if submission.link_flair_text == 'Media':
                     if '-' in submission.title:
                         insert_id_submission(cur, submission.id)
+                        print(submission.title)
                         con.commit()             
         except Exception as e:
             logging.exception(e)
             con.rollback()
             cur.close()
             con.close()
+            raise KeyError
             continue
             

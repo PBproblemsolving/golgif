@@ -40,7 +40,6 @@ def get_new_submissions_6(cursor):
 
 @db_status_handler
 def insert_id_submission(cursor, submission_id):
-    logging.basicConfig(filename='insert_submissions.log', encoding='utf-8', level=logging.INFO)
     return(("insert into submissions (submission_id) values (?)", (submission_id,)), )
 
 @db_status_handler

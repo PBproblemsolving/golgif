@@ -15,7 +15,7 @@ if __name__ == '__main__':
             con = sqlite3.connect(DB)
             cur = con.cursor()
             subreddit = reddit.subreddit('soccer')
-            result = subreddit.stream.submissions(limit=None)
+            result = subreddit.stream.submissions(skip_existing=True)
             
             for submission in result:
                 if submission.link_flair_text == 'Media':
