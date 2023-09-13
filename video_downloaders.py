@@ -1,10 +1,14 @@
 import requests
-from meczbot import headers, TEMP_VIDEOS
+from meczbot import headers, TEMP_VIDEOS, rand_headers
 import os
 import logging
+from bs4 import BeautifulSoup
 
 logging.basicConfig(filename='videos_download.log',
                      encoding='utf-8', level=logging.INFO)
+
+def set_filename(link, file_format):
+    return "_".join(link.split('/')) + file_format
 
 def video_downloader(video_getter):
     def inner(*args):
@@ -27,7 +31,7 @@ def video_downloader(video_getter):
 
 @video_downloader
 def get_reddit_video(link: str):
-    filename = link.split('/')[-1] + '.mp4'
+    filename = "_".join(link.split('/')) + '.mp4'
     r = requests.get(link, allow_redirects= False)
     try:
         link = r.headers['location'] + '.json'
@@ -53,4 +57,34 @@ def get_reddit_video(link: str):
         logging.ERROR(f"{link} causes {e}")
         return None, None
     logging.info(f"{link} retrived")        
+    return filename, r.content
+    
+@video_downloader
+def get_streamable_video(link) -> (str, bytes):
+    filename = set_filename(link, ".mp4")
+    r = requests.get(link, headers=rand_headers())
+    soup = BeautifulSoup(r.text, 'html.parser')
+    soup = soup.find('video', {'id': 'video-player-tag'})
+    soup = "https:" + soup['src']
+    r = requests.get(soup, headers=rand_headers())
+    return filename, r.content
+
+@video_downloader
+def get_streamin_video(link):
+    filename = set_filename(link, ".mp4")
+    r = requests.get(link, headers=rand_headers())
+    soup = BeautifulSoup(r.text, 'html.parser')
+    soup = soup.find('video', {'id': 'video'})
+    soup = soup['src']
+    r = requests.get(soup, headers=rand_headers())
+    return filename, r.content
+    
+@video_downloader
+def get_dubz_video(link):
+    filename = set_filename(link, ".mp4")
+    r = requests.get(link, headers=rand_headers())
+    soup = BeautifulSoup(r.text, 'html.parser')    
+    soup = soup.find('source', {'type':'video/mp4'})
+    soup = soup['src']
+    r = requests.get(soup, headers=rand_headers())
     return filename, r.content
