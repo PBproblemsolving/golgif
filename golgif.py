@@ -195,31 +195,31 @@ if __name__ == '__main__':
 
 
             with open('data.json', encoding='utf-8') as f:
-                threads = json.load(f)
-
-            for submission in result:
-                if submission.link_flair_text == 'Media':
-                    if '-' in submission.title:
-                        competitors = get_competitors(submission.title)
-                        logging.info(submission.title)
-                        try:
-                            competitions_links = check_competition_online(competitors[0])
-                        except AttributeError as e:
+                for submission in result:
+                    if submission.link_flair_text == 'Media':
+                        if '-' in submission.title:
+                            threads = json.load(f)
+                            f.seek(0)
+                            competitors = get_competitors(submission.title)
+                            logging.info(submission.title)
                             try:
-                                competitions_links = check_competition_online(competitors[1])
-                            except AttributeError:
-                                competitions_links = None
-                        if competitions_links:
-                            for link in competitions_links:
-                                thread_title = leagues.get(link.split('/')[4])
-                                if thread_title:
-                                    thread_id = threads.get(thread_title)
-                                    if thread_id:
-                                        thread = reddit.submission(thread_id)
-                                        thread.reply(template.format(submission.title, submission.url))
-                                        logging.info('Submitted: {}'.format(submission.title))
-                                        break
+                                competitions_links = check_competition_online(competitors[0])
+                            except AttributeError as e:
+                                try:
+                                    competitions_links = check_competition_online(competitors[1])
+                                except AttributeError:
+                                    competitions_links = None
+                            if competitions_links:
+                                for link in competitions_links:
+                                    thread_title = leagues.get(link.split('/')[4])
+                                    if thread_title:
+                                        thread_id = threads.get(thread_title)
+                                        if thread_id:
+                                            thread = reddit.submission(thread_id)
+                                            thread.reply(template.format(submission.title, 
+                                                                         submission.url))
+                                            logging.info('Submitted: {}'.format(submission.title))
+                                            break
         except Exception as e:
             logging.exception(e)
             continue
-    sleep(3600)
