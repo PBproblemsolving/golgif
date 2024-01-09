@@ -8,6 +8,8 @@ import logging
 import re
 from datetime import datetime
 from collections import namedtuple
+from meczbot import rand_headers
+
 
 headers = {
 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36',
@@ -44,7 +46,7 @@ def transfermarkt_query(input_string):
 def check_scorer_online(input_string):
     while input_string:
         link = transfermarkt_query(input_string)
-        r = requests.get(link, headers=headers).text    
+        r = requests.get(link, headers=rand_headers()).text    
         soup = BeautifulSoup(r, 'html.parser')
         try:
             soup = soup.find('div', {'id':'main'})
@@ -65,7 +67,7 @@ def check_scorer_online(input_string):
         
 def check_competition_online(input_string):
     link = transfermarkt_query(input_string)
-    r = requests.get(link, headers=headers).text
+    r = requests.get(link, headers=rand_headers()).text
     soup = BeautifulSoup(r, 'html.parser')
     soup = soup.find('div', {'id':'main'})
     soup = soup.main.find_all('div', recursive=False)
@@ -77,7 +79,7 @@ def check_competition_online(input_string):
             continue
         div = str(div).replace('startseite', 'spielplan')
         link = "https://www.transfermarkt.pl" + div
-        html = requests.get(link, headers=headers).text
+        html = requests.get(link, headers=rand_headers()).text
         div = BeautifulSoup(html, 'html.parser')
         div = div.find_all('div', {'class': 'table-header'})
         return [competition.h2.a['href'] for competition in div]
@@ -88,7 +90,7 @@ def goal_data_from_scorer(scorer_link: str, timestamp):
     scorer_link = scorer_link.replace('profil', 'leistungsdaten')
     scorer_id = scorer_link.split('/')[-1]
     link = base_link + scorer_link
-    r = requests.get(link, headers=headers).text
+    r = requests.get(link, headers=rand_headers()).text
     soup = BeautifulSoup(r, 'html.parser')
     soup = soup.find('div', {'class': 'large-8 columns'})
     soup = soup.findAll('div', {'class': 'box'}, recursive=False)[2:]
@@ -127,7 +129,7 @@ def links_from_comment(comment):
 def get_player_info(player_id):
     assert player_id
     link = "https://www.transfermarkt.com/player/leistungsdaten/spieler/{}".format(player_id)
-    r = requests.get(link, headers=headers).text
+    r = requests.get(link, headers=rand_headers()).text
     soup = BeautifulSoup(r, 'html.parser')
     soup = soup.find('header', {'class': 'data-header'})
     soup_name = soup.find('div', {'class': 'data-header__headline-container'})
@@ -162,7 +164,7 @@ def get_player_info(player_id):
 def get_team_info(team_id):
     assert team_id
     link = "https://www.transfermarkt.com/team/startseite/verein/{}".format(team_id)
-    r = requests.get(link, headers=headers).text
+    r = requests.get(link, headers=rand_headers()).text
     soup = BeautifulSoup(r, 'html.parser')
     soup = soup.find('header', {'class': 'data-header'})    
     name = soup.div.h1.text.strip()
@@ -171,7 +173,7 @@ def get_team_info(team_id):
 def get_league_info(league_abbr):
     assert league_abbr
     link = "https://www.transfermarkt.com/leauge/startseite/pokalwettbewerb/{}".format(league_abbr)
-    r = requests.get(link, headers=headers).text
+    r = requests.get(link, headers=rand_headers()).text
     soup = BeautifulSoup(r, 'html.parser')
     soup = soup.find('header', {'class': 'data-header'})    
     name = soup.div.h1.text.strip()
